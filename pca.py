@@ -98,7 +98,7 @@ def covariance_matrix(l, mean):
 """
     matrix * vector
 """
-def multiply(mat, vec, size):
+def multiply_eigen(mat, vec, size):
     res = [1] * size
     for i in range(size):
         sum = 0
@@ -108,6 +108,15 @@ def multiply(mat, vec, size):
     great = abs(max(res))
     res = [ (x/great) for x in res ]
     return res, great
+
+def multiply(mat, vec, size):
+    res = [1] * size
+    for i in range(size):
+        sum = 0
+        for j in range(size):
+            sum += mat[i][j] * vec[j]
+        res[i] = sum
+    return res
 
 """
     dot product
@@ -128,7 +137,7 @@ def dot(vec1, vec2):
 """
 def rayleigh_quotient(mat, vec):
     size = len(mat)
-    matvec, val = multiply(mat, vec, size)
+    matvec = multiply(mat, vec, size)
     return dot(matvec, vec) / dot(vec,vec)
 
 def matrix_equal(mat1, mat2):
@@ -174,7 +183,7 @@ def eigen_problem(covar_mat):
     iterations = 100
     while True:
         iterations -= 1
-        res, eigen_lambda = multiply(covar_mat, eigen_vector, size)
+        res, eigen_lambda = multiply_eigen(covar_mat, eigen_vector, size)
         eigen_vector = res
         if matrix_equal(eigen_vector, res) or iterations<1:
             break
@@ -224,6 +233,8 @@ def main():
     point_plot(l, "original.png")
 
     normalize(l, mn)
+
+    point_plot(l, "normalized.png")
     
     # covariance matrix
     covar_mat = covariance_matrix(l, mn)
@@ -233,7 +244,7 @@ def main():
     vector = normalize_vector(vector)
     projected = project(l, vector)
 
-    point_plot(projected, "projection.png")
+    point_plot(projected, "projected.png")
 
 
 if __name__=="__main__":
