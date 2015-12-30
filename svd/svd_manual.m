@@ -12,25 +12,23 @@ function [U, S, V] = svd_manual(X)
     XTX_eigenvals = round(XTX_eigenvals .* 100) ./ 100;
 
     diagonals = intersect(XXT_eigenvals, XTX_eigenvals);
-    diagonals(diagonals<0) = [];
+    diagonals(diagonals<=0) = [];
     diagonals = flipud(sort(diagonals));
     diagonals = sqrt(diagonals);
 
     S = diag(diagonals);
-    U = fliplr(XXT_eigenvec);
+    %U = fliplr(XXT_eigenvec);
     V = fliplr(XTX_eigenvec);
 
-    original_dim = size(X);
-    m = max(original_dim);
     diag_dim = size(S);
-
+    diff = abs(size(V)(1) - diag_dim(1));
 
     if ( size(S)(1) < size(V)(1))
-        for i = [1: abs(m - diag_dim(1)) ]
+        for i = [1: diff ]
             S = [S; zeros(1, diag_dim(2))];
         end
-        for i = [1: abs(m - diag_dim(2))]
-            S = [S transpose(zeros(1, m)) ];
+        for i = [1: diff]
+            S = [S transpose(zeros(1, size(S)(1))) ];
         end
     end
 
