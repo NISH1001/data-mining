@@ -11,18 +11,20 @@ function [U, S, V] = svd_manual(X)
     XTX_eigenvals = diag(XTX_eigenval);
     XTX_eigenvals = round(XTX_eigenvals .* 100) ./ 100;
 
+    % get common +ve eigen values
     diagonals = intersect(XXT_eigenvals, XTX_eigenvals);
     diagonals(diagonals<=0) = [];
     diagonals = flipud(sort(diagonals));
     diagonals = sqrt(diagonals);
 
+    % form singular matrix
     S = diag(diagonals);
-    %U = fliplr(XXT_eigenvec);
+    % form matrix V
     V = fliplr(XTX_eigenvec);
 
     diag_dim = size(S);
     diff = abs(size(V)(1) - diag_dim(1));
-
+    % to maintain matrix size for multiplicatoin, fill with zero
     if ( size(S)(1) < size(V)(1))
         for i = [1: diff ]
             S = [S; zeros(1, diag_dim(2))];
@@ -31,9 +33,6 @@ function [U, S, V] = svd_manual(X)
             S = [S transpose(zeros(1, size(S)(1))) ];
         end
     end
-
+    % form U
     U = X * V * pinv(S);
-
-    %VT = pinv(S) * U' * X;
-    %V = VT';
 end
